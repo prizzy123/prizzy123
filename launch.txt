@@ -1,0 +1,3 @@
+https://lightsail.aws.amazon.com/ls/remote/us-east-2/instances/Debian-1/terminal?protocol=ssh
+
+https://lightsail.aws.amazon.com/ls/remote/us-east-2/instances/Debian-1/terminal?protocol=ssh#
