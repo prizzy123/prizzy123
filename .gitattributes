@@ -1,3 +1,2 @@
-*.php text
-leash.min.js binary
-lib/jquery.terminal.min.js binary
+*.go linguist-language=Go
+docs/* linguist-documentation

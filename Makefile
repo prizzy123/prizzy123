@@ -1,28 +1,28 @@
-#  This file is part of Leash (Browser Shell)
-#  Copyright (C) 2013-2018  Jakub Jankiewicz <http://jcubic.pl>
-#
-#  Released under the MIT license
+# Merlin version
+VERSION=$(shell cat pkg/merlin.go |grep "const Version ="|cut -d"\"" -f2)
+BUILD=$(shell git rev-parse HEAD)
 
-VERSION=0.18.0
-JSCOMPRESS=uglifyjs
-SED=sed
-CP=cp
-CAT=cat
-RM=rm
-DATE=`date -uR`
+# Output File Location
+DIR=data/temp/v${VERSION}/${BUILD}
+$(shell mkdir -p ${DIR})
 
-ALL: leash.min.js README version
+# Go build flags
+LDFLAGS=-ldflags '-X main.build=${BUILD} -buildid='
 
-version: Makefile
-	echo -n $(VERSION) > version
+default:
+	go build ${LDFLAGS} -o ${DIR}/${MSERVER} main.go
 
-README: README.in .$(VERSION)
-	$(SED) -e "s/{{VERSION}}/$(VERSION)/g" README.in > README
+# Compile Server - Windows x64
+windows:
+	export GOOS=windows;export GOARCH=amd64;go build ${LDFLAGS} -o ${DIR}/merlinServer-Windows-x64.exe main.go
 
-leash.min.js: leash-src.js .$(VERSION) Makefile
-	$(SED) -e "s/{{VERSION}}/$(VERSION)/g" -e "s/{{DATE}}/$(DATE)/g" leash-src.js > leash.js
-	$(JSCOMPRESS) -o leash.min.js --comments --mangle -- leash.js
-	$(RM) leash.js
+# Compile Server - Linux x64
+linux:
+	export GOOS=linux;export GOARCH=amd64;go build ${LDFLAGS} -o ${DIR}/merlinServer-Linux-x64 main.go
 
-.$(VERSION):
-	touch .$(VERSION)
+# Compile Server - Darwin x64
+darwin:
+	export GOOS=darwin;export GOARCH=amd64;go build ${LDFLAGS} -o ${DIR}/merlinServer-Darwin-x64 main.go
+
+clean:
+	rm -rf ${DIR}*
